@@ -1,0 +1,13 @@
+image: chybie/node-aws-cli
+options:
+    size: 2x
+pipelines:
+  branches:
+    master:
+      - step:
+          script:
+            - NODE_OPTIONS=--max_old_space_size=4096
+            - yarn --ignore-engines install
+            - git submodule update --init --recursive
+            - CI=false yarn build
+            - aws s3 --region "us-east-2" sync --acl public-read --delete build s3://oe-dash.sig-cloud.com/
